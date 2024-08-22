@@ -108,6 +108,8 @@ class WhatsappController {
 
         if (currentConversation.step === 4) {
           //recebe preço
+          //seta preço
+          //pede cep
         }
 
         if (currentConversation.step === 5) {
