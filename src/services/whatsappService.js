@@ -1,5 +1,6 @@
 const axios = require('axios');
 const fs = require("fs");
+const FormData = require("form-data")
 const myConsole = new console.Console(fs.createWriteStream("./logsZap.txt", { flags: "a" }));
 
 async function sendWhatsappMessage(data) {
@@ -25,26 +26,63 @@ async function downloadMedia(mediaId, mimeType) {
       'Authorization': 'Bearer EAAMVhQNh7JkBO148KRruopSYToLbGf2huiW9rQjIognygNAqxOp9cw62Gb1TMjqjZC7UxZC2QaK5jRixTq3FviKvHpIvMXbVxt0oZAIAszHtVpsqSQtntwkZCNRu2PJWRfOkFldPz1wR7TNOAObZBvKQjvdkvdZB9RSykFblRxWeIpgIHJjjnAP2ZClaH3ehuGUFd83j5zGaThw9C0GNepCLAZDZD',
     };
 
-    const responseBuffer = await axios.get(url, {
-      headers: headers,
-      responseType: 'arraybuffer'
-    });
-
-    const responseUrl = await axios.get(url, {
+    const response = await axios.get(url, {
       headers: headers,
     });
 
-    // Convert the binary data to a Buffer
-    const mediaBuffer = Buffer.from(responseBuffer.data, 'binary');
+    const { url: imageUrl } = response.data
 
-    // Save the file or return the Buffer for further processing
-    const filePath = `./downloads/${mediaId}.${mimeType.split('/')[1]}`;
-    fs.writeFileSync(filePath, mediaBuffer);
+    const { data } = await axios.get(imageUrl, {
+      headers: headers,
+    })
 
-    return filePath;
+    
+    const mediaBuffer = Buffer.from(image.data, 'binary');
+
+    await uploadMedia(image.data)
   }
   catch (error) {
     const a = error
+  }
+}
+
+async function uploadMedia(buffer) {
+  const url = `http://image-upload-service.olxbr.cloud/image`;
+
+  const form = new FormData()
+  form.append('file', buffer, 'image-name.jpg')
+
+  try {
+    const response = await axios.post(url, form, {
+      headers: {
+        'x-api-key':'',
+      }
+    })
+
+    console.log(response)
+  } catch (error) {
+    const a = error
+    const b = '1'
+  }
+}
+
+async function uploadMediaLink(link) {
+  const url = `http://image-upload-service.olxbr.cloud/image`;
+
+  const form = new FormData()
+  form.append('image_uri', 'https://img.olx.com.br/images/35/356927032569841.jpg')
+
+  try {
+    const response = await axios.post(url, form, {
+      headers: {
+        'x-api-key':'sVFwNbBouFyltZ5d1dpIXMnr05HQBE77CBL1n73gr4t105',
+      }
+    })
+
+    console.log(response)
+  } catch (error) {
+    const a = error
+    const b = '1'
   }
 }
 
