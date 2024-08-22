@@ -97,20 +97,17 @@ class WhatsappController {
 
 
         if(currentConversation.step === 3){
-          console.log('step description body:::', text)
-          const data = currentConversation.setBody(text)
+          currentConversation.setBody(text, currentConversation.subject)
+          const data = this.stepPrice(number)
           whatsappService.sendWhatsappMessage(data)
           currentConversation.nextStep()
           res.status(200).send()
           return
         }
 
-        if(currentConversation.step === 4){
-          //pede preço
-        }
 
         if (currentConversation.step === 4) {
-          
+          //recebe preço
         }
 
         if (currentConversation.step === 5) {
@@ -183,14 +180,14 @@ class WhatsappController {
       .sampleText(`Agora, crie uma descrição para seu ${product}`, number)
   }
 
+  stepPrice(number, product) {
+    return samples
+      .sampleText(`Por quanto você quer vender ${product}?`, number)
+  }
+
   stepImages(number, maxImages){
     return samples
       .sampleText(`Agora vamos adicionar imagens ao seu anúncio. Envie até ${maxImages} fotos.`, number)
-  }
-
-  stepBody(number) {
-    return samples
-      .sampleText('Agora que já temos o título, qual a descrição que você quer adicionar:', number)
   }
 }
 
