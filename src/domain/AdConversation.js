@@ -1,6 +1,6 @@
 class AdConversation {
   messages = [];
-  step = 0;
+  step = 6;
   subject = '';
   category = {
     categoryId: '',

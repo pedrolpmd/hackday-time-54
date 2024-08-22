@@ -61,7 +61,7 @@ class WhatsappController {
         }
 
         if (currentConversation.step === 1) {
-          if(text === 'Sim!'){
+          if (text === 'Sim!') {
             const data = this.stepTitle(number)
             whatsappService.sendWhatsappMessage(data)
             currentConversation.nextStep()
@@ -84,7 +84,7 @@ class WhatsappController {
             category.parent_id
           )
 
-          const data = this.stepCategoryConfirmation(number,category)
+          const data = this.stepCategoryConfirmation(number, category)
           await whatsappService.sendWhatsappMessage(data)
 
           const descriptionData = this.stepDescription(number, currentConversation.subject)
@@ -101,7 +101,7 @@ class WhatsappController {
         }
 
         if (currentConversation.step === 4) {
-          
+
         }
 
         if (currentConversation.step === 5) {
@@ -115,7 +115,12 @@ class WhatsappController {
           return
         }
 
-        
+        if (currentConversation.step === 6) {
+          const a = text;
+          const b = 1
+        }
+
+
       }
     } catch (error) {
       myConsole.log('error:::', JSON.stringify(error))
@@ -139,8 +144,9 @@ class WhatsappController {
       } else {
         myConsole.log("sem mensagem")
       }
-    }
-    else {
+    } else if (typeMessage == "image") {
+      text = messages.image.id
+    } else {
       myConsole.log("sem mensagem")
     }
 
@@ -158,7 +164,7 @@ class WhatsappController {
 
   stepGoodbye(number) {
     return samples
-    .sampleText('Quando quiser publicar um anúncio, envie uma mensagem aqui :)', number)
+      .sampleText('Quando quiser publicar um anúncio, envie uma mensagem aqui :)', number)
   }
 
   stepCategoryConfirmation(number, category) {
@@ -175,7 +181,7 @@ class WhatsappController {
   }
 
 
-  stepImages(number, maxImages){
+  stepImages(number, maxImages) {
     return samples
       .sampleText(`Agora vamos adicionar imagens ao seu anúncio. Envie até ${maxImages} fotos.`, number)
   }
