@@ -30,3 +30,56 @@ message:: {
   text: { body: 'Hello, I want to post an ad.' }
 }
 recebido:: Hello, I want to post an ad.
+message:: {
+  from: '554898176179',
+  type: 'text',
+  text: { body: 'Cachorro Golden Retriever' }
+}
+product received::: Cachorro Golden Retriever
+message:: {
+  from: '554898176179',
+  type: 'text',
+  text: { body: 'Cachorro Golden Retriever' }
+}
+product received::: Cachorro Golden Retriever
+message:: {
+  from: '554898176179',
+  type: 'text',
+  text: { body: 'Cachorro Golden Retriever' }
+}
+product received::: Cachorro Golden Retriever
+message:: {
+  from: '554898176179',
+  type: 'text',
+  text: { body: 'Cachorro Golden Retriever' }
+}
+product received::: Cachorro Golden Retriever
+category response::: {"category_id":10040,"probability":0.9998678772477638,"category_name":"Cachorros e acessórios","parent_id":10000,"category_main_name":"Animais de estimação"}
+message:: {
+  from: '554898176179',
+  type: 'text',
+  text: { body: 'Cachorro Golden Retriever' }
+}
+error::: {}
+message:: {
+  from: '554898176179',
+  type: 'text',
+  text: { body: 'Cachorro Golden Retriever' }
+}
+error::: {}
+message:: {
+  from: '554898176179',
+  type: 'text',
+  text: { body: 'Cachorro Golden Retriever' }
+}
+error::: {}
+message:: {
+  from: '554898176179',
+  type: 'text',
+  text: { body: 'Cachorro Golden Retriever' }
+}
+error::: {}
+message:: { from: '554898176179', type: 'text', text: { body: '88066027' } }
+message:: { from: '554898176179', type: 'text', text: { body: '88066027' } }
+message:: { from: '554898176179', type: 'text', text: { body: '88066027' } }
+message:: { from: '554898176179', type: 'text', text: { body: '88066027' } }

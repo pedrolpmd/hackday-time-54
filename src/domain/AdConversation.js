@@ -1,11 +1,12 @@
 class AdConversation {
   messages = [];
-  step = 0;
+  step = 5;
   subject = '';
   category = {
-    categoryId: null,
-    categoryName: '',
-    categoryMainName: ''
+    categoryId: 10040,
+    categoryMainName: 'Animais de estimação',
+    categoryName: 'Cachorros e acessórios',
+    categoryParentId: 10000,
   };
   body = '';
   price = null;
@@ -37,10 +38,11 @@ class AdConversation {
     this.subject = subject;
   }
 
-  setCategory(categoryId, categoryName, categoryMainName) {
+  setCategory(categoryId, categoryName, categoryMainName, categoryParentId) {
     this.category.categoryId = categoryId
     this.category.categoryName = categoryName
     this.category.categoryMainName = categoryMainName
+    this.category.categoryParentId = categoryParentId
   }
 
   setBody(body) {
