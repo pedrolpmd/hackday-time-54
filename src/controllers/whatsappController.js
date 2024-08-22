@@ -61,7 +61,7 @@ class WhatsappController {
         }
 
         if (currentConversation.step === 1) {
-          if(text === 'Sim!'){
+          if (text === 'Sim!') {
             const data = this.stepTitle(number)
             whatsappService.sendWhatsappMessage(data)
             currentConversation.nextStep()
@@ -84,7 +84,7 @@ class WhatsappController {
             category.parent_id
           )
 
-          const data = this.stepCategoryConfirmation(number,category)
+          const data = this.stepCategoryConfirmation(number, category)
           await whatsappService.sendWhatsappMessage(data)
 
           const descriptionData = this.stepDescription(number, currentConversation.subject)
@@ -123,7 +123,20 @@ class WhatsappController {
           return
         }
 
-        
+        if (currentConversation.step === 6) {
+          const { mediaId, mimetype } = text;
+          const id = await whatsappService.downloadMedia(mediaId)
+          const fileExtension = mimetype.split('/')[1];
+          currentConversation.setImage(`${id}.${fileExtension}`)
+
+          const data = this.stepCategoryFields(number)
+          whatsappService.sendWhatsappMessage(data)
+          currentConversation.nextStep()
+          res.status(200).send()
+          return
+        }
+
+
       }
     } catch (error) {
       myConsole.log('error:::', JSON.stringify(error))
@@ -147,8 +160,12 @@ class WhatsappController {
       } else {
         myConsole.log("sem mensagem")
       }
-    }
-    else {
+    } else if (typeMessage == "image") {
+      text =  {
+        mediaId: messages.image.id,
+        mimetype: messages.image.mime_type
+      }
+    } else {
       myConsole.log("sem mensagem")
     }
 
@@ -166,7 +183,7 @@ class WhatsappController {
 
   stepGoodbye(number) {
     return samples
-    .sampleText('Quando quiser publicar um anúncio, envie uma mensagem aqui :)', number)
+      .sampleText('Quando quiser publicar um anúncio, envie uma mensagem aqui :)', number)
   }
 
   stepCategoryConfirmation(number, category) {
@@ -187,9 +204,15 @@ class WhatsappController {
       .sampleText(`Por quanto você quer vender ${product}?`, number)
   }
 
-  stepImages(number, maxImages){
+  stepImages(number, maxImages) {
     return samples
       .sampleText(`Agora vamos adicionar imagens ao seu anúncio. Envie até ${maxImages} fotos.`, number)
+  }
+
+  stepCategoryFields(number) {
+    return samples
+      .sampleText('Para finalizar, vamos preencher informações específicas da categoria de seu anúncio', number)
+
   }
 }
 

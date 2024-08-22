@@ -1,0 +1,124 @@
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+error::: {}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+error::: {}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+error::: {"errno":-2,"code":"ENOENT","syscall":"open","path":"./downloads/445602171799654.jpeg"}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}
+message:: {
+  from: '554898176179',
+  id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAEhggOEI1RkVDODc4QkVCMDkxMEI5RDI4OEFENzY4NDE5RkIA',
+  timestamp: '1724345726',
+  type: 'image',
+  image: {
+    mime_type: 'image/jpeg',
+    sha256: 'fa5EJi/d8aS4+aIjkHa2DDVIMoAh5Xzn5EIWSLT+p+4=',
+    id: '445602171799654'
+  }
+}

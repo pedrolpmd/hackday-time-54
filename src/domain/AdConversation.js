@@ -1,6 +1,6 @@
 class AdConversation {
   messages = [];
-  step = 0;
+  step = 6;
   subject = '';
   category = {
     categoryId: '',
@@ -59,7 +59,7 @@ class AdConversation {
     this.address.cidade = cidade
   }
   setImage(image) {
-    this.image = image;
+    this.image.push(image);
   }
 
   setCategoryFields(categoryFields) {
