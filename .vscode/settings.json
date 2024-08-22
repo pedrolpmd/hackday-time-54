@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/39c4cfe1-b301-4332-9057-eeaebab52c1a/resourceGroups/zapBotApi-rg/providers/Microsoft.Web/sites/zapBotApi",
+  "appService.deploySubpath": "src"
+}

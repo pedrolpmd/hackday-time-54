@@ -1,0 +1,32 @@
+conversations:: [ Conversation { messages: [], step: 0, number: '123456789' } ]
+message:: {
+  from: '123456789',
+  type: 'text',
+  text: { body: 'Hello, I want to post an ad.' }
+}
+typeMessage:: text
+recebido:: Hello, I want to post an ad.
+conversations:: [ Conversation { messages: [], step: 0, number: '123456789' } ]
+message:: {
+  from: '123456789',
+  type: 'interactive',
+  interactive: { type: 'list_reply', list_reply: { title: 'Post a new ad' } }
+}
+typeMessage:: interactive
+{ type: 'list_reply', list_reply: { title: 'Post a new ad' } }
+recebido:: Post a new ad
+conversations:: [ Conversation { messages: [], step: 0, number: '123456789' } ]
+message:: {
+  from: '123456789',
+  type: 'text',
+  text: { body: 'Hello, I want to post an ad.' }
+}
+typeMessage:: text
+recebido:: Hello, I want to post an ad.
+conversations:: []
+message:: {
+  from: '123456789',
+  type: 'text',
+  text: { body: 'Hello, I want to post an ad.' }
+}
+recebido:: Hello, I want to post an ad.
