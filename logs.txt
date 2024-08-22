@@ -122,3 +122,7 @@ message:: {
     id: '445602171799654'
   }
 }
+message:: { from: '554898176179', type: 'text', text: { body: 'Muito fofo' } }
+message:: { from: '554898176179', type: 'text', text: { body: 'Muito fofo' } }
+message:: { from: '554898176179', type: 'text', text: { body: '2000' } }
+message:: { from: '554898176179', type: 'text', text: { body: '88066027' } }
