@@ -98,8 +98,7 @@ class WhatsappController {
 
         if(currentConversation.step === 3){
           console.log('step description body:::', text)
-          currentConversation.setBody(text)
-          const data = whatsappService.stepBody(number)
+          const data = currentConversation.setBody(text)
           whatsappService.sendWhatsappMessage(data)
           currentConversation.nextStep()
           res.status(200).send()
