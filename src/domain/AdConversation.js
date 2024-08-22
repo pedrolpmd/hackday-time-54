@@ -3,9 +3,10 @@ class AdConversation {
   step = 0;
   subject = '';
   category = {
-    categoryId: null,
+    categoryId: '',
+    categoryMainName: '',
     categoryName: '',
-    categoryMainName: ''
+    categoryParentId: '',
   };
   body = '';
   price = null;
@@ -37,10 +38,11 @@ class AdConversation {
     this.subject = subject;
   }
 
-  setCategory(categoryId, categoryName, categoryMainName) {
+  setCategory(categoryId, categoryName, categoryMainName, categoryParentId) {
     this.category.categoryId = categoryId
     this.category.categoryName = categoryName
     this.category.categoryMainName = categoryMainName
+    this.category.categoryParentId = categoryParentId
   }
 
   setBody(body) {

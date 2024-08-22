@@ -3,6 +3,7 @@ const myConsole = new console.Console(fs.createWriteStream("./logs.txt", { flags
 const whatsappService = require("../services/whatsappService")
 const inferenceService = require("../services/inferenceService")
 const buscaCepService = require("../services/buscaCepService")
+const categoryService = require("../services/categoryService")
 const AdConversation = require("../domain/AdConversation")
 const samples = require("../shared/sampleModels");
 
@@ -74,22 +75,19 @@ class WhatsappController {
         }
 
         if (currentConversation.step === 2) {
-          myConsole.log('product received:::', text)
           currentConversation.setSubject(text)
           const category = await inferenceService.getCategory(text)
-          myConsole.log('category response:::', JSON.stringify(category))
           currentConversation.setCategory(
             category.category_id,
             category.category_name,
-            category.category_main_name
+            category.category_main_name,
+            category.parent_id
           )
 
           const data = this.stepCategoryConfirmation(number,category)
-          myConsole.log('send cat confirm:', JSON.stringify(data))
           await whatsappService.sendWhatsappMessage(data)
 
           const descriptionData = this.stepDescription(number, currentConversation.subject)
-          myConsole.log('send desc:', JSON.stringify(descriptionData))
           await whatsappService.sendWhatsappMessage(descriptionData)
 
           currentConversation.nextStep()
@@ -109,11 +107,15 @@ class WhatsappController {
         if (currentConversation.step === 5) {
           const { result } = await buscaCepService.getLocation(text)
           currentConversation.setAddress(result.cep, result.bairro_distrito, result.localidade)
-          
+          const maxImages = await categoryService.getMaxImages(currentConversation.category.categoryParentId)
+          const data = this.stepImages(number, maxImages)
+          whatsappService.sendWhatsappMessage(data)
+          currentConversation.nextStep()
+          res.status(200).send()
+          return
         }
 
         
-
       }
     } catch (error) {
       myConsole.log('error:::', JSON.stringify(error))
@@ -170,6 +172,12 @@ class WhatsappController {
   stepDescription(number, product) {
     return samples
       .sampleText(`Agora, crie uma descrição para seu ${product}`, number)
+  }
+
+
+  stepImages(number, maxImages){
+    return samples
+      .sampleText(`Agora vamos adicionar imagens ao seu anúncio. Envie até ${maxImages} fotos.`, number)
   }
 }
 
