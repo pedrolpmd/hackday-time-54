@@ -48,10 +48,37 @@ class WhatsappController{
         }
 
         const text = this.getTextUser(messages);
+
+        let data
+        if(currentConversation.step === 0){
+          data = this.step0Message()
+          currentConversation.nextStep()
+        }
+
+        if(currentConversation.step === 1){
+          data = this.step0Message()
+          currentConversation.nextStep()
+          //requisição pra api de inferencia
+          //categoria
+          //mensagem: vamos publicar na categoria xxxxx
+        }
+
+
+        if(currentConversation.step === 3){
+          //pede descrição
+        }
+
+        if(currentConversation.step === 4){
+          //pede preço
+        }
         
-        const data = samples.sampleButtons('Boas vindas ao OLX-Bot. Bora publicar um anúncio via whatsapp?', number, ['Sim!', 'Agora não'])
-  
-        whatsappService.sendWhatsappMessage(data)
+        if(currentConversation.step === 5){
+          //pede cep
+          //buscaCep => Campeche, Florianópolis
+        }
+        
+        console.log('sending:::', data)
+        //whatsappService.sendWhatsappMessage(data)
       }
       res.send("EVENT_RECEIVED");
     } catch (error) {
@@ -84,6 +111,10 @@ class WhatsappController{
     }
   
     return text;
+  }
+
+  step0Message() {
+    return samples.sampleButtons('Boas vindas ao OLX-Bot. Bora publicar um anúncio via whatsapp?', number, ['Sim!', 'Agora não'])
   }
 }
 
