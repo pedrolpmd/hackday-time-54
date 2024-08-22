@@ -1,9 +1,0 @@
-Response: {
-  messaging_product: 'whatsapp',
-  contacts: [ { input: '554898176179', wa_id: '554898176179' } ],
-  messages: [
-    {
-      id: 'wamid.HBgMNTU0ODk4MTc2MTc5FQIAERgSQjFBRjdFODU5QjNGNDg0RUUzAA=='
-    }
-  ]
-}

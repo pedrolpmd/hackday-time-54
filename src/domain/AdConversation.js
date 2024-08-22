@@ -1,12 +1,12 @@
 class AdConversation {
   messages = [];
-  step = 5;
+  step = 0;
   subject = '';
   category = {
-    categoryId: 10040,
-    categoryMainName: 'Animais de estimação',
-    categoryName: 'Cachorros e acessórios',
-    categoryParentId: 10000,
+    categoryId: '',
+    categoryMainName: '',
+    categoryName: '',
+    categoryParentId: '',
   };
   body = '';
   price = null;
