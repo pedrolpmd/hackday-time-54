@@ -1,7 +1,16 @@
 const axios = require('axios');
+const https = require('https');
+const sharp = require('sharp');
 const fs = require("fs");
 const FormData = require("form-data")
 const myConsole = new console.Console(fs.createWriteStream("./logsZap.txt", { flags: "a" }));
+
+const axiosInstance = axios.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false
+  })
+});
+
 
 async function sendWhatsappMessage(data) {
   try {
@@ -26,20 +35,7 @@ async function downloadMedia(mediaId, mimeType) {
       'Authorization': 'Bearer EAAMVhQNh7JkBO148KRruopSYToLbGf2huiW9rQjIognygNAqxOp9cw62Gb1TMjqjZC7UxZC2QaK5jRixTq3FviKvHpIvMXbVxt0oZAIAszHtVpsqSQtntwkZCNRu2PJWRfOkFldPz1wR7TNOAObZBvKQjvdkvdZB9RSykFblRxWeIpgIHJjjnAP2ZClaH3ehuGUFd83j5zGaThw9C0GNepCLAZDZD',
     };
 
-    const response = await axios.get(url, {
-      headers: headers,
-    });
-
-    const { url: imageUrl } = response.data
-
-    const { data } = await axios.get(imageUrl, {
-      headers: headers,
-    })
-
-    
-    const mediaBuffer = Buffer.from(image.data, 'binary');
-
-    await uploadMedia(image.data)
+    await processImage(url, headers);
   }
   catch (error) {
     const a = error
@@ -55,7 +51,7 @@ async function uploadMedia(buffer) {
   try {
     const response = await axios.post(url, form, {
       headers: {
-        'x-api-key':'',
+        'x-api-key': '',
       }
     })
 
@@ -66,23 +62,21 @@ async function uploadMedia(buffer) {
   }
 }
 
-async function uploadMediaLink(link) {
-  const url = `http://image-upload-service.olxbr.cloud/image`;
-
-  const form = new FormData()
-  form.append('image_uri', 'https://img.olx.com.br/images/35/356927032569841.jpg')
-
+async function processImage(url, headers) {
   try {
-    const response = await axios.post(url, form, {
-      headers: {
-        'x-api-key':'sVFwNbBouFyltZ5d1dpIXMnr05HQBE77CBL1n73gr4t105',
-      }
-    })
+    const response = await axios.get(url, { headers: headers });
+    const { url: imageUrl } = response.data;
+    
+    const imageResponse = await axiosInstance.get(imageUrl, { headers: headers, responseType: 'arraybuffer'})
+    //const imageResponse = await axios.get(imageUrl, { headers: headers, responseType: 'arraybuffer' });
+    const jfifBuffer = imageResponse.data;
 
-    console.log(response)
+    // Convert JFIF buffer to JPG buffer
+    const jpgBuffer = await sharp(jfifBuffer).jpeg().toBuffer();
+
+    await uploadMedia(jpgBuffer);
   } catch (error) {
-    const a = error
-    const b = '1'
+    console.error(error);
   }
 }
 
