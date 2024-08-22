@@ -59,7 +59,7 @@ class AdConversation {
     this.address.cidade = cidade
   }
   setImage(image) {
-    this.image = image;
+    this.image.push(image);
   }
 
   setCategoryFields(categoryFields) {

@@ -124,9 +124,16 @@ class WhatsappController {
         }
 
         if (currentConversation.step === 6) {
-          const { id, mimetype } = text;
-          const media = await whatsappService.downloadMedia(id, mimetype)
-          const b = 1
+          const { mediaId, mimetype } = text;
+          const id = await whatsappService.downloadMedia(mediaId)
+          const fileExtension = mimetype.split('/')[1];
+          currentConversation.setImage(`${id}.${fileExtension}`)
+
+          const data = this.stepCategoryFields(number)
+          whatsappService.sendWhatsappMessage(data)
+          currentConversation.nextStep()
+          res.status(200).send()
+          return
         }
 
 
@@ -155,7 +162,7 @@ class WhatsappController {
       }
     } else if (typeMessage == "image") {
       text =  {
-        id: messages.image.id,
+        mediaId: messages.image.id,
         mimetype: messages.image.mime_type
       }
     } else {
@@ -200,6 +207,12 @@ class WhatsappController {
   stepImages(number, maxImages) {
     return samples
       .sampleText(`Agora vamos adicionar imagens ao seu anúncio. Envie até ${maxImages} fotos.`, number)
+  }
+
+  stepCategoryFields(number) {
+    return samples
+      .sampleText('Para finalizar, vamos preencher informações específicas da categoria de seu anúncio', number)
+
   }
 }
 

@@ -5,29 +5,21 @@ const fs = require("fs");
 const FormData = require("form-data")
 const myConsole = new console.Console(fs.createWriteStream("./logsZap.txt", { flags: "a" }));
 
-const axiosInstance = axios.create({
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: false
-  })
-});
-
-
 async function sendWhatsappMessage(data) {
   try {
-    const response = await axios.post('https://graph.facebook.com/v20.0/224233857431273/messages', data, {
+    await axios.post('https://graph.facebook.com/v20.0/224233857431273/messages', data, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer EAAMVhQNh7JkBO148KRruopSYToLbGf2huiW9rQjIognygNAqxOp9cw62Gb1TMjqjZC7UxZC2QaK5jRixTq3FviKvHpIvMXbVxt0oZAIAszHtVpsqSQtntwkZCNRu2PJWRfOkFldPz1wR7TNOAObZBvKQjvdkvdZB9RSykFblRxWeIpgIHJjjnAP2ZClaH3ehuGUFd83j5zGaThw9C0GNepCLAZDZD',
       }
     });
 
-    myConsole.log('Response:', response.data);
   } catch (error) {
     myConsole.log('error:', error.message);
   }
 }
 
-async function downloadMedia(mediaId, mimeType) {
+async function downloadMedia(mediaId) {
   try {
 
     const url = `https://graph.facebook.com/v11.0/${mediaId}`;
@@ -35,10 +27,28 @@ async function downloadMedia(mediaId, mimeType) {
       'Authorization': 'Bearer EAAMVhQNh7JkBO148KRruopSYToLbGf2huiW9rQjIognygNAqxOp9cw62Gb1TMjqjZC7UxZC2QaK5jRixTq3FviKvHpIvMXbVxt0oZAIAszHtVpsqSQtntwkZCNRu2PJWRfOkFldPz1wR7TNOAObZBvKQjvdkvdZB9RSykFblRxWeIpgIHJjjnAP2ZClaH3ehuGUFd83j5zGaThw9C0GNepCLAZDZD',
     };
 
-    await processImage(url, headers);
+    const id = await processImage(url, headers);
+    return id
   }
   catch (error) {
-    const a = error
+    myConsole.log('error:', error.message);
+  }
+}
+
+async function processImage(url, headers) {
+  try {
+    const response = await axios.get(url, { headers: headers });
+    const { url: imageUrl } = response.data;
+    
+    const imageResponse = await axios.get(imageUrl, { headers: headers, responseType: 'arraybuffer'})
+    const jfifBuffer = imageResponse.data;
+
+    const jpgBuffer = await sharp(jfifBuffer).jpeg().toBuffer();
+
+    const id = await uploadMedia(jpgBuffer)
+    return id
+  } catch (error) {
+    myConsole.log('error:', error.message);
   }
 }
 
@@ -51,34 +61,17 @@ async function uploadMedia(buffer) {
   try {
     const response = await axios.post(url, form, {
       headers: {
-        'x-api-key': '',
+        'x-api-key': 'sVFwNbBouFyltZ5d1dpIXMnr05HQBE77CBL1n73gr4t105',
       }
     })
 
-    console.log(response)
+    return response.data.id
   } catch (error) {
-    const a = error
-    const b = '1'
+    myConsole.log('error:', error.message);
   }
 }
 
-async function processImage(url, headers) {
-  try {
-    const response = await axios.get(url, { headers: headers });
-    const { url: imageUrl } = response.data;
-    
-    const imageResponse = await axiosInstance.get(imageUrl, { headers: headers, responseType: 'arraybuffer'})
-    //const imageResponse = await axios.get(imageUrl, { headers: headers, responseType: 'arraybuffer' });
-    const jfifBuffer = imageResponse.data;
 
-    // Convert JFIF buffer to JPG buffer
-    const jpgBuffer = await sharp(jfifBuffer).jpeg().toBuffer();
-
-    await uploadMedia(jpgBuffer);
-  } catch (error) {
-    console.error(error);
-  }
-}
 
 module.exports = {
   sendWhatsappMessage,
