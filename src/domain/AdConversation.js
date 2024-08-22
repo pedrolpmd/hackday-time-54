@@ -1,12 +1,12 @@
 class AdConversation {
   messages = [];
-  step = 3;
-  subject = 'Filhote de Golden Retriever';
+  step = 2;
+  subject = '';
   category = {
-    categoryId: '',
-    categoryMainName: '',
-    categoryName: '',
-    categoryParentId: '',
+    id: '',
+    mainName: '',
+    name: '',
+    parentId: '',
   };
   body = '';
   price = null;
@@ -39,10 +39,10 @@ class AdConversation {
   }
 
   setCategory(categoryId, categoryName, categoryMainName, categoryParentId) {
-    this.category.categoryId = categoryId
-    this.category.categoryName = categoryName
-    this.category.categoryMainName = categoryMainName
-    this.category.categoryParentId = categoryParentId
+    this.category.id = categoryId
+    this.category.name = categoryName
+    this.category.mainName = categoryMainName
+    this.category.parentId = categoryParentId
   }
 
   setBody(body) {
@@ -62,8 +62,17 @@ class AdConversation {
     this.image.push(image);
   }
 
-  setCategoryFields(categoryFields) {
-    this.categoryFields = categoryFields;
+  setCategoryFieldTitle(field) {
+    this.categoryFields.push(field);
+  }
+
+  setCompleteCategoryField(field) {
+    const categoryFields = this.categoryFields
+
+    const completedIndex = categoryFields.findIndex(incompleteField => incompleteField.title === field.title)
+
+    categoryFields[completedIndex] = field
+    this.categoryFields = categoryFields
   }
 }
 

@@ -4,6 +4,7 @@ const whatsappService = require("../services/whatsappService")
 const inferenceService = require("../services/inferenceService")
 const buscaCepService = require("../services/buscaCepService")
 const categoryService = require("../services/categoryService")
+const { extractOptionsFromCkFields } = require("../helpers/extract-options-from-ck-fields")
 const AdConversation = require("../domain/AdConversation")
 const samples = require("../shared/sampleModels");
 
@@ -90,9 +91,10 @@ class WhatsappController {
           const descriptionData = this.stepDescription(number, currentConversation.subject)
           await whatsappService.sendWhatsappMessage(descriptionData)
 
-          currentConversation.nextStep()
+          //currentConversation.nextStep()
+          currentConversation.step = 7
           res.status(200).send()
-          return
+          //return
         }
 
 
@@ -138,7 +140,35 @@ class WhatsappController {
           res.status(200).send()
           return
         }
+
+        if(currentConversation.step == 7){
+          const slug = await categoryService.getCategorySlug(currentConversation.category.id)
+          const categoryFields = extractOptionsFromCkFields(slug)
+          categoryFields.forEach(field => {
+            currentConversation.setCategoryFieldTitle(field)
+          })
+
+          currentConversation.nextStep()
+          res.status(200).send()
+        }
+
+        //TODO: uma maneira para não precisar enviar mais uma mensagem pra vir o segundo campo
+        const incompleteCategoryField = currentConversation.categoryFields.find(field => field.selected === undefined)
+        if(incompleteCategoryField){
+          if(text){
+            const completededOption = incompleteCategoryField.options.find(option => option.key === text)
+            if(completededOption){
+              const completeCategoryField = incompleteCategoryField
+              completeCategoryField.selected = text
+              currentConversation.setCompleteCategoryField(completeCategoryField)
+            }
+          }
+          const data = this.stepCompleteCategoryField(number, incompleteCategoryField)
+          whatsappService.sendWhatsappMessage(data)
+          res.status(200).send()
+        }
       }
+      
     } catch (error) {
       myConsole.log('error:::', JSON.stringify(error))
     }
@@ -157,7 +187,7 @@ class WhatsappController {
       if (typeInteractive == "button_reply") {
         text = (interactiveObject["button_reply"])["title"];
       } else if (typeInteractive == "list_reply") {
-        text = (interactiveObject["list_reply"])["title"];
+        text = interactiveObject["list_reply"]["id"];
       } else {
         myConsole.log("sem mensagem")
       }
@@ -219,7 +249,11 @@ class WhatsappController {
   stepCategoryFields(number) {
     return samples
       .sampleText('Para finalizar, vamos preencher informações específicas da categoria de seu anúncio', number)
+  }
 
+  stepCompleteCategoryField(number, field){
+    return samples
+      .sampleMenu(number, field.options, `Selecione ${field.title} do seu produto:`)
   }
 }
 

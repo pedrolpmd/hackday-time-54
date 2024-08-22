@@ -20,6 +20,25 @@ async function getMaxImages(parentId) {
   }
 }
 
+async function getCategorySlug(categoryId) {
+  try {
+    const response = await axios.get(
+      `https://clodoview-api.olx.com.br/view/ad-form-fields-${categoryId}-web/render`,
+      {
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    return response.data
+  } catch (error) {
+    myConsole.log('cat error:', JSON.stringify(error));
+  }
+}
+
 module.exports = {
-  getMaxImages
+  getMaxImages,
+  getCategorySlug
 };

@@ -119,11 +119,10 @@ function sampleMenu(number, options, text) {
     const generateButtons = () => {
       let buttons = []
       for (let index = 0; index < options.length; index++) {
-        const optionText = options[index];
 
         let option = {
-          "id": index,
-          "title": optionText,
+          "id": options[index].key,
+          "title": options[index].value,
         }
         buttons.push(option)
       }
