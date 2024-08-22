@@ -1,7 +1,7 @@
 class AdConversation {
   messages = [];
-  step = 6;
-  subject = '';
+  step = 3;
+  subject = 'Filhote de Golden Retriever';
   category = {
     categoryId: '',
     categoryMainName: '',

@@ -97,8 +97,8 @@ class WhatsappController {
 
 
         if(currentConversation.step === 3){
-          currentConversation.setBody(text, currentConversation.subject)
-          const data = this.stepPrice(number)
+          currentConversation.setBody(text)
+          const data = this.stepPrice(number, currentConversation.subject)
           whatsappService.sendWhatsappMessage(data)
           currentConversation.nextStep()
           res.status(200).send()
@@ -107,16 +107,19 @@ class WhatsappController {
 
 
         if (currentConversation.step === 4) {
-          //recebe preço
-          //seta preço
-          //pede cep
+          currentConversation.setPrice(text)
+          const data = this.stepZipCode(number)
+          whatsappService.sendWhatsappMessage(data)
+          currentConversation.nextStep()
+          res.status(200).send()
+          return
         }
 
         if (currentConversation.step === 5) {
           const { result } = await buscaCepService.getLocation(text)
           currentConversation.setAddress(result.cep, result.bairro_distrito, result.localidade)
           const maxImages = await categoryService.getMaxImages(currentConversation.category.categoryParentId)
-          const data = this.stepImages(number, maxImages)
+          const data = this.stepImages(number, maxImages ? maxImages : 3)
           whatsappService.sendWhatsappMessage(data)
           currentConversation.nextStep()
           res.status(200).send()
@@ -135,8 +138,6 @@ class WhatsappController {
           res.status(200).send()
           return
         }
-
-
       }
     } catch (error) {
       myConsole.log('error:::', JSON.stringify(error))
@@ -203,6 +204,12 @@ class WhatsappController {
     return samples
       .sampleText(`Por quanto você quer vender ${product}?`, number)
   }
+
+  stepZipCode(number) {
+    return samples
+      .sampleText('Qual é o CEP da localização do produto?', number)
+  }
+
 
   stepImages(number, maxImages) {
     return samples
