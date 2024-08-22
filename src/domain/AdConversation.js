@@ -2,7 +2,11 @@ class AdConversation {
   messages = [];
   step = 0;
   subject = '';
-  category = null;
+  category = {
+    categoryId: null,
+    categoryName: '',
+    categoryMainName: ''
+  };
   body = '';
   price = null;
   zipcode = null;
@@ -27,6 +31,12 @@ class AdConversation {
 
   setSubject(subject) {
     this.subject = subject;
+  }
+
+  setCategory(categoryId, categoryName, categoryMainName) {
+    this.category.categoryId = categoryId
+    this.category.categoryName = categoryName
+    this.category.categoryMainName = categoryMainName
   }
 
   setBody(body) {
