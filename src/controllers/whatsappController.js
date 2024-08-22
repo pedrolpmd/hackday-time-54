@@ -95,13 +95,19 @@ class WhatsappController {
           return
         }
 
-        if (currentConversation.step === 3) {
-          //seta descrição
-          //pede preço
+
+        if(currentConversation.step === 3){
+          currentConversation.setBody(text, currentConversation.subject)
+          const data = this.stepPrice(number)
+          whatsappService.sendWhatsappMessage(data)
+          currentConversation.nextStep()
+          res.status(200).send()
+          return
         }
 
+
         if (currentConversation.step === 4) {
-          
+          //recebe preço
         }
 
         if (currentConversation.step === 5) {
@@ -174,6 +180,10 @@ class WhatsappController {
       .sampleText(`Agora, crie uma descrição para seu ${product}`, number)
   }
 
+  stepPrice(number, product) {
+    return samples
+      .sampleText(`Por quanto você quer vender ${product}?`, number)
+  }
 
   stepImages(number, maxImages){
     return samples
