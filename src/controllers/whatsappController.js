@@ -1,11 +1,11 @@
 const fs = require("fs");
 const myConsole = new console.Console(fs.createWriteStream("./logs.txt", { flags: "a" }))
 const whatsappService = require("../services/whatsappService")
-const Conversation = require("../domain/Conversation")
+const AdConversation = require("../domain/AdConversation")
 const samples = require("../shared/sampleModels");
 
 class WhatsappController{
-  conversations = []
+  adConversations = []
   constructor(){}
 
   verifyToken(req, res){
@@ -27,12 +27,11 @@ class WhatsappController{
   }
 
   addConversation = (conversation) => {
-    this.conversations.push(conversation)
+    this.adConversations.push(conversation)
   }
   
   receiveMessage = (req, res) => {
     try {
-      myConsole.log('conversations::', this.conversations)
       const entry = (req.body["entry"])[0]
       const changes = (entry["changes"])[0]
       const value = changes["value"];
@@ -42,9 +41,9 @@ class WhatsappController{
         const messages = messageObject[0];
         const number = messages["from"];
 
-        let currentConversation = this.conversations.find(conversation => conversation.number == number);
+        let currentConversation = this.adConversations.find(conversation => conversation.number == number);
         if (!currentConversation) {
-          currentConversation = new Conversation(number);
+          currentConversation = new AdConversation(number);
           this.addConversation(currentConversation);
         }
 
