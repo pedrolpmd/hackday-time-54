@@ -9,7 +9,11 @@ class AdConversation {
   };
   body = '';
   price = null;
-  zipcode = null;
+  address = {
+    zipcode: null,
+    bairro: '',
+    cidade: ''
+  };
   image = [];
   categoryFields = [];
 
@@ -47,10 +51,11 @@ class AdConversation {
     this.price = price;
   }
 
-  setZipcode(zipcode) {
-    this.zipcode = zipcode;
+  setAddress(zipcode, bairro, cidade) {
+    this.address.zipcode = zipcode
+    this.address.bairro = bairro
+    this.address.cidade = cidade
   }
-
   setImage(image) {
     this.image = image;
   }

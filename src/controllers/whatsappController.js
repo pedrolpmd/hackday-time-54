@@ -2,6 +2,7 @@ const fs = require("fs");
 const myConsole = new console.Console(fs.createWriteStream("./logs.txt", { flags: "a" }))
 const whatsappService = require("../services/whatsappService")
 const inferenceService = require("../services/inferenceService")
+const buscaCepService = require("../services/buscaCepService")
 const AdConversation = require("../domain/AdConversation")
 const samples = require("../shared/sampleModels");
 
@@ -97,16 +98,18 @@ class WhatsappController {
         }
 
         if (currentConversation.step === 3) {
-          //pede descrição
-        }
-
-        if (currentConversation.step === 4) {
+          //seta descrição
           //pede preço
         }
 
+        if (currentConversation.step === 4) {
+          
+        }
+
         if (currentConversation.step === 5) {
-          //pede cep
-          //buscaCep => Campeche, Florianópolis
+          const { result } = await buscaCepService.getLocation(text)
+          currentConversation.setAddress(result.cep, result.bairro_distrito, result.localidade)
+          
         }
 
         
