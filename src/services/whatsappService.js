@@ -17,6 +17,38 @@ async function sendWhatsappMessage(data) {
   }
 }
 
+async function downloadMedia(mediaId, mimeType) {
+  try {
+
+    const url = `https://graph.facebook.com/v11.0/${mediaId}`;
+    const headers = {
+      'Authorization': 'Bearer EAAMVhQNh7JkBO148KRruopSYToLbGf2huiW9rQjIognygNAqxOp9cw62Gb1TMjqjZC7UxZC2QaK5jRixTq3FviKvHpIvMXbVxt0oZAIAszHtVpsqSQtntwkZCNRu2PJWRfOkFldPz1wR7TNOAObZBvKQjvdkvdZB9RSykFblRxWeIpgIHJjjnAP2ZClaH3ehuGUFd83j5zGaThw9C0GNepCLAZDZD',
+    };
+
+    const responseBuffer = await axios.get(url, {
+      headers: headers,
+      responseType: 'arraybuffer'
+    });
+
+    const responseUrl = await axios.get(url, {
+      headers: headers,
+    });
+
+    // Convert the binary data to a Buffer
+    const mediaBuffer = Buffer.from(responseBuffer.data, 'binary');
+
+    // Save the file or return the Buffer for further processing
+    const filePath = `./downloads/${mediaId}.${mimeType.split('/')[1]}`;
+    fs.writeFileSync(filePath, mediaBuffer);
+
+    return filePath;
+  }
+  catch (error) {
+    const a = error
+  }
+}
+
 module.exports = {
-  sendWhatsappMessage
+  sendWhatsappMessage,
+  downloadMedia
 };

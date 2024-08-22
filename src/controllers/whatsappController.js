@@ -121,7 +121,8 @@ class WhatsappController {
         }
 
         if (currentConversation.step === 6) {
-          const a = text;
+          const { id, mimetype } = text;
+          const media = await whatsappService.downloadMedia(id, mimetype)
           const b = 1
         }
 
@@ -150,7 +151,10 @@ class WhatsappController {
         myConsole.log("sem mensagem")
       }
     } else if (typeMessage == "image") {
-      text = messages.image.id
+      text =  {
+        id: messages.image.id,
+        mimetype: messages.image.mime_type
+      }
     } else {
       myConsole.log("sem mensagem")
     }
