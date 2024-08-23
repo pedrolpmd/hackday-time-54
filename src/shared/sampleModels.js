@@ -14,13 +14,14 @@ function sampleText(textReponse, number) {
   return data
 }
 
-function sampleImage(number) {
+function sampleImage(number, link, text) {
   const data = JSON.stringify({
     "messaging_product": "whatsapp",
     "to": number,
     "type": "image",
     "image": {
-      "link": "https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/image_whatsapp.png"
+      "caption":text,
+      "link": link
     }
   });
 
@@ -119,11 +120,10 @@ function sampleMenu(number, options, text) {
     const generateButtons = () => {
       let buttons = []
       for (let index = 0; index < options.length; index++) {
-        const optionText = options[index];
 
         let option = {
-          "id": index,
-          "title": optionText,
+          "id": options[index].key,
+          "title": options[index].value,
         }
         buttons.push(option)
       }

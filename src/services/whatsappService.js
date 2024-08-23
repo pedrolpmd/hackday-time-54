@@ -1,5 +1,4 @@
 const axios = require('axios');
-const https = require('https');
 const sharp = require('sharp');
 const fs = require("fs");
 const FormData = require("form-data")
@@ -10,7 +9,7 @@ async function sendWhatsappMessage(data) {
     await axios.post('https://graph.facebook.com/v20.0/224233857431273/messages', data, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer EAAMVhQNh7JkBO148KRruopSYToLbGf2huiW9rQjIognygNAqxOp9cw62Gb1TMjqjZC7UxZC2QaK5jRixTq3FviKvHpIvMXbVxt0oZAIAszHtVpsqSQtntwkZCNRu2PJWRfOkFldPz1wR7TNOAObZBvKQjvdkvdZB9RSykFblRxWeIpgIHJjjnAP2ZClaH3ehuGUFd83j5zGaThw9C0GNepCLAZDZD',
+        'Authorization': 'Bearer EAAMVhQNh7JkBOxq4BnIaXHbrJauEEw7dyYm7GiR23ZBmZAGnGcHRkCdLMczmWz3xPbgVjE9whMG9J7ZAYUS50Idb0LTqrsACDGf9qoZANesSrsNwSXFYL3e4ZCWeIl5FqRJNpy26CPq9LCyPmaktu3OgweojCDZC4hpah2ccTiZBDjBOjrJCzhXx2JQiHFzZBOwecZBDctqTAqmPaGZBZBI2S4ZD',
       }
     });
 
@@ -22,22 +21,22 @@ async function sendWhatsappMessage(data) {
 async function downloadMedia(mediaId) {
   try {
 
-    const url = `https://graph.facebook.com/v11.0/${mediaId}`;
+    const fbGetMediaUrl = `https://graph.facebook.com/v11.0/${mediaId}`;
     const headers = {
-      'Authorization': 'Bearer EAAMVhQNh7JkBO148KRruopSYToLbGf2huiW9rQjIognygNAqxOp9cw62Gb1TMjqjZC7UxZC2QaK5jRixTq3FviKvHpIvMXbVxt0oZAIAszHtVpsqSQtntwkZCNRu2PJWRfOkFldPz1wR7TNOAObZBvKQjvdkvdZB9RSykFblRxWeIpgIHJjjnAP2ZClaH3ehuGUFd83j5zGaThw9C0GNepCLAZDZD',
+      'Authorization': 'Bearer EAAMVhQNh7JkBOxq4BnIaXHbrJauEEw7dyYm7GiR23ZBmZAGnGcHRkCdLMczmWz3xPbgVjE9whMG9J7ZAYUS50Idb0LTqrsACDGf9qoZANesSrsNwSXFYL3e4ZCWeIl5FqRJNpy26CPq9LCyPmaktu3OgweojCDZC4hpah2ccTiZBDjBOjrJCzhXx2JQiHFzZBOwecZBDctqTAqmPaGZBZBI2S4ZD',
     };
 
-    const id = await processImage(url, headers);
-    return id
+    const { id, url } = await processImage(fbGetMediaUrl, headers);
+    return { id, url }
   }
   catch (error) {
     myConsole.log('error:', error.message);
   }
 }
 
-async function processImage(url, headers) {
+async function processImage(fbGetMediaUrl, headers) {
   try {
-    const response = await axios.get(url, { headers: headers });
+    const response = await axios.get(fbGetMediaUrl, { headers: headers });
     const { url: imageUrl } = response.data;
     
     const imageResponse = await axios.get(imageUrl, { headers: headers, responseType: 'arraybuffer'})
@@ -45,8 +44,8 @@ async function processImage(url, headers) {
 
     const jpgBuffer = await sharp(jfifBuffer).jpeg().toBuffer();
 
-    const id = await uploadMedia(jpgBuffer)
-    return id
+    const { id, url } = await uploadMedia(jpgBuffer)
+    return { id, url }
   } catch (error) {
     myConsole.log('error:', error.message);
   }
@@ -65,7 +64,7 @@ async function uploadMedia(buffer) {
       }
     })
 
-    return response.data.id
+    return { id: response.data.id, url: response.data.uri}
   } catch (error) {
     myConsole.log('error:', error.message);
   }

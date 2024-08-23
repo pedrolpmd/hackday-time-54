@@ -4,6 +4,8 @@ const whatsappService = require("../services/whatsappService")
 const inferenceService = require("../services/inferenceService")
 const buscaCepService = require("../services/buscaCepService")
 const categoryService = require("../services/categoryService")
+const adService = require("../services/adService")
+const { extractOptionsFromCkFields } = require("../helpers/extract-options-from-ck-fields")
 const AdConversation = require("../domain/AdConversation")
 const samples = require("../shared/sampleModels");
 
@@ -95,8 +97,7 @@ class WhatsappController {
           return
         }
 
-
-        if(currentConversation.step === 3){
+        if (currentConversation.step === 3) {
           currentConversation.setBody(text)
           const data = this.stepPrice(number, currentConversation.subject)
           whatsappService.sendWhatsappMessage(data)
@@ -116,9 +117,12 @@ class WhatsappController {
         }
 
         if (currentConversation.step === 5) {
-          const { result } = await buscaCepService.getLocation(text)
-          currentConversation.setAddress(result.cep, result.bairro_distrito, result.localidade)
-          const maxImages = await categoryService.getMaxImages(currentConversation.category.categoryParentId)
+          const response = await buscaCepService.getLocation(text)
+          const { result } = response
+          if (result) {
+            currentConversation.setAddress(result.cep, result.bairro_distrito, result.localidade)
+          }
+          const maxImages = await categoryService.getMaxImages(currentConversation.category.parentId)
           const data = this.stepImages(number, maxImages ? maxImages : 3)
           whatsappService.sendWhatsappMessage(data)
           currentConversation.nextStep()
@@ -128,17 +132,105 @@ class WhatsappController {
 
         if (currentConversation.step === 6) {
           const { mediaId, mimetype } = text;
-          const id = await whatsappService.downloadMedia(mediaId)
+          const { id, url } = await whatsappService.downloadMedia(mediaId)
           const fileExtension = mimetype.split('/')[1];
-          currentConversation.setImage(`${id}.${fileExtension}`)
+          currentConversation.setImage({ path: `${id}.${fileExtension}`, url })
 
           const data = this.stepCategoryFields(number)
           whatsappService.sendWhatsappMessage(data)
-          currentConversation.nextStep()
           res.status(200).send()
-          return
+
+          const slug = await categoryService.getCategorySlug(currentConversation.category.id)
+          const categoryFields = extractOptionsFromCkFields(slug)
+          if (categoryFields) {
+            categoryFields.forEach(field => {
+              currentConversation.setCategoryField(field)
+            })
+
+            const firstIncompleteCategoryField = currentConversation.categoryFields[0]
+            const data = this.stepCompleteCategoryField(number, firstIncompleteCategoryField)
+            whatsappService.sendWhatsappMessage(data)
+            currentConversation.nextStep()
+            res.status(200).send()
+            return
+          } else {
+            //TODO extrair esse tijolo
+            const seeYourAdMessage = this.stepYourAd(number)
+            await whatsappService.sendWhatsappMessage(seeYourAdMessage)
+            const adLook = this.stepAdLook(number, currentConversation)
+            await whatsappService.sendWhatsappMessage(adLook)
+            const confirmMessage = this.stepPostConfirmation(number)
+            await whatsappService.sendWhatsappMessage(confirmMessage)
+            currentConversation.nextStep()
+            res.status(200).send()
+            return
+          }
+        }
+
+        if (currentConversation.step === 7) {
+          const { label, id } = text
+          const incompleteCategoryField = currentConversation.categoryFields.find(field => field.selected === undefined)
+
+          if (incompleteCategoryField) {
+            const completededOption = incompleteCategoryField.options.find(option => option.key === id)
+            if (completededOption) {
+              const completeCategoryField = incompleteCategoryField
+              completeCategoryField.selected = {
+                label,
+                id
+              }
+              currentConversation.setCompleteCategoryField(completeCategoryField)
+            }
+
+            const anotherIncompleteCategoryField = currentConversation.categoryFields.find(field => field.selected === undefined)
+
+            if (anotherIncompleteCategoryField) {
+              const data = this.stepCompleteCategoryField(number, anotherIncompleteCategoryField)
+              whatsappService.sendWhatsappMessage(data)
+              res.status(200).send()
+              return
+            } else {
+              const seeYourAdMessage = this.stepYourAd(number)
+              await whatsappService.sendWhatsappMessage(seeYourAdMessage)
+              const adLook = this.stepAdLook(number, currentConversation)
+              await whatsappService.sendWhatsappMessage(adLook)
+              const confirmMessage = this.stepPostConfirmation(number)
+              await whatsappService.sendWhatsappMessage(confirmMessage)
+              currentConversation.nextStep()
+              res.status(200).send()
+              return
+            }
+          } else {
+            const seeYourAdMessage = this.stepYourAd(number)
+            await whatsappService.sendWhatsappMessage(seeYourAdMessage)
+            const adLook = this.stepAdLook(number, currentConversation)
+            await whatsappService.sendWhatsappMessage(adLook)
+            const confirmMessage = this.stepPostConfirmation(number)
+            await whatsappService.sendWhatsappMessage(confirmMessage)
+            currentConversation.nextStep()
+            res.status(200).send()
+            return
+          }
+
+        }
+
+        if(currentConversation.step === 8 ){
+          if(text === 'Bora desapegar!'){
+            const { ad_id } = await adService.postAd(currentConversation)
+            //const listId = await adService.getListId(ad_id)
+            const listId = 1330430472
+            const publishedMessage = this.stepPublishedAd(number)
+            await whatsappService.sendWhatsappMessage(publishedMessage)
+            const finalData = this.stepFinalAd(number, currentConversation, listId)
+            await whatsappService.sendWhatsappMessage(finalData)
+            res.status(200).send()
+            return
+          } else {
+            //TODO menu com campos das steps pra ele editar
+          }
         }
       }
+
     } catch (error) {
       myConsole.log('error:::', JSON.stringify(error))
     }
@@ -157,12 +249,15 @@ class WhatsappController {
       if (typeInteractive == "button_reply") {
         text = (interactiveObject["button_reply"])["title"];
       } else if (typeInteractive == "list_reply") {
-        text = (interactiveObject["list_reply"])["title"];
+        text = {
+          id: interactiveObject["list_reply"]["id"],
+          label: interactiveObject["list_reply"]["title"]
+        };
       } else {
         myConsole.log("sem mensagem")
       }
     } else if (typeMessage == "image") {
-      text =  {
+      text = {
         mediaId: messages.image.id,
         mimetype: messages.image.mime_type
       }
@@ -197,12 +292,12 @@ class WhatsappController {
 
   stepDescription(number, product) {
     return samples
-      .sampleText(`Agora, crie uma descrição para seu ${product}`, number)
+      .sampleText(`Agora, crie uma descrição para seu ${product}:`, number)
   }
 
   stepPrice(number, product) {
     return samples
-      .sampleText(`Por quanto você quer vender ${product}?`, number)
+      .sampleText(`Por quanto você quer vender ${product}? (ex: R$200)`, number)
   }
 
   stepZipCode(number) {
@@ -219,8 +314,76 @@ class WhatsappController {
   stepCategoryFields(number) {
     return samples
       .sampleText('Para finalizar, vamos preencher informações específicas da categoria de seu anúncio', number)
-
   }
+
+  stepCompleteCategoryField(number, field) {
+    return samples
+      .sampleMenu(number, field.options, `Selecione ${field.title} do seu produto:`)
+  }
+
+  stepYourAd(number) {
+    return samples
+      .sampleText('Confirme os dados do seu anúncio:', number)
+  }
+
+  stepAdLook(number, currentConversation) {
+    const { url } = currentConversation.image[0]
+    const text = this.createAdText(currentConversation)
+    return samples
+      .sampleImage(number, url, text)
+  }
+
+  createAdText = (currentConversation, listId) => {
+    const { subject, body, price } = currentConversation
+    const { bairro, cidade } = currentConversation.address
+    const categoryFieldsList = []
+    currentConversation.categoryFields.forEach(field =>
+      categoryFieldsList.push({
+        title: field.title,
+        label: field.selected.label,
+        id: field.selected.id
+      })
+    )
+
+    let categoryFieldsText = '';
+    categoryFieldsList.forEach((field) => {
+      categoryFieldsText += `*${field.title}*: ${field.label}\n`;
+    });
+
+    // Constructing the final formatted text
+    let adText = `
+*${subject}*
+${body}
+  
+${categoryFieldsText}
+*Valor*: ${price}
+*Local*: ${bairro} - ${cidade}`;
+
+    if(listId){
+      adText += `
+‎ 
+Link na *OLX*: https://www.olx.com.br/vi/${listId}`
+    }
+    return adText;
+  }
+
+  stepPostConfirmation(number) {
+    return samples.sampleButtons(
+      'Bora publicar esse anúncio top?', number, ['Bora desapegar!', 'Quero ajusar algo.'])
+  }
+
+  stepPublishedAd(number) {
+    return samples
+      .sampleText('Seu anúncio foi publicado!', number)
+  }
+
+  stepFinalAd = (number,currentConversation, listId) => {
+    const { url } = currentConversation.image[0]
+    const text = this.createAdText(currentConversation, listId)
+    return samples
+      .sampleImage(number, url, text)
+  }
+
 }
 
 
