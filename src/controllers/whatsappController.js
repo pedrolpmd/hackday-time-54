@@ -122,7 +122,6 @@ class WhatsappController {
           if (result) {
             currentConversation.setAddress(result.cep, result.bairro_distrito, result.localidade)
           }
-          //verifica aqui
           const maxImages = await categoryService.getMaxImages(currentConversation.category.parentId)
           const data = this.stepImages(number, maxImages ? maxImages : 3)
           whatsappService.sendWhatsappMessage(data)
