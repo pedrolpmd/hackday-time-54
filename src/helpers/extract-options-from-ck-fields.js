@@ -8,6 +8,7 @@ function extractOptionsFromCkFields(slug) {
       const fieldData = data.ckfields.find(field => field.code === ckField.id)
       const label = fieldData.extra_data.label
       field.title = label
+      field.id = ckField.id
       field.options = fieldData.datasource.values.slice(0, 5);
       categoryFields.push(field);
     }

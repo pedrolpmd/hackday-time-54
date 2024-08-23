@@ -1,6 +1,5 @@
 class AdConversation {
-  messages = [];
-  step = 2;
+  step = 0;
   subject = '';
   category = {
     id: '',
@@ -62,7 +61,7 @@ class AdConversation {
     this.image.push(image);
   }
 
-  setCategoryFieldTitle(field) {
+  setCategoryField(field) {
     this.categoryFields.push(field);
   }
 

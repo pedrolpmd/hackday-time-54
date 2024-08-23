@@ -14,13 +14,14 @@ function sampleText(textReponse, number) {
   return data
 }
 
-function sampleImage(number) {
+function sampleImage(number, link, text) {
   const data = JSON.stringify({
     "messaging_product": "whatsapp",
     "to": number,
     "type": "image",
     "image": {
-      "link": "https://biostoragecloud.blob.core.windows.net/resource-udemy-whatsapp-node/image_whatsapp.png"
+      "caption":text,
+      "link": link
     }
   });
 
